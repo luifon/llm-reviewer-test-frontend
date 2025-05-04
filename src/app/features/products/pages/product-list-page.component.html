@@ -1,6 +1,11 @@
 @if (filters) {
 <div class="page-container">
-  <app-product-filters [form]="filters" style="width: 100%" />
+  <div class="page-header">
+    <app-product-filters [form]="filters" />
+    <button mat-raised-button color="primary" (click)="openAddModal()">
+      Add Product
+    </button>
+  </div>
   <app-product-table [filters]="filters" style="width: 100%" />
 </div>
 

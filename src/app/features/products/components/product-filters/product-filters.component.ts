@@ -8,7 +8,7 @@ import {
   Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -29,7 +29,6 @@ import { CategoryService } from '../../../../core/services/category.service';
   styleUrls: ['./product-filters.component.scss'],
 })
 export class ProductFiltersComponent {
-  private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
 
   categories = signal<Category[]>([]);

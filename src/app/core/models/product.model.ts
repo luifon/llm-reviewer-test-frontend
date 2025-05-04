@@ -5,6 +5,13 @@ export interface Product {
   price: number;
   available: boolean;
   categoryName?: string;
-  createdAt?: string;
-  updatedAt?: string;
+}
+
+export interface ProductById {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  available: boolean;
+  categoryId?: string;
 }

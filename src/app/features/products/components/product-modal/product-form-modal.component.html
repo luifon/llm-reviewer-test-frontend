@@ -1,0 +1,68 @@
+<h1 mat-dialog-title>
+  {{ data ? "Edit Product" : "Add Product" }}
+</h1>
+
+<div mat-dialog-content [formGroup]="form" class="flex flex-wrap gap-4 mt-4">
+  <!-- Name -->
+  <mat-form-field appearance="outline" class="w-full sm:w-[calc(50%-0.5rem)]">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" required />
+    @if (form.controls['name'].invalid && form.controls['name'].touched) {
+    <mat-error>Name is required</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Price -->
+  <mat-form-field appearance="outline" class="w-full sm:w-[calc(50%-0.5rem)]">
+    <mat-label>Price</mat-label>
+    <input
+      matInput
+      formControlName="price"
+      mask="separator.2"
+      thousandSeparator=","
+      decimalMarker="."
+      prefix="$"
+      inputmode="numeric"
+    />
+    @if (form.controls['price'].invalid && form.controls['price'].touched) {
+    <mat-error>Price is required and must be valid</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Description -->
+  <mat-form-field appearance="outline" class="w-full sm:w-[calc(50%-0.5rem)]">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="3"></textarea>
+  </mat-form-field>
+
+  <!-- Category -->
+  <mat-form-field appearance="outline" class="w-full sm:w-[calc(50%-0.5rem)]">
+    <mat-label>Category</mat-label>
+    <mat-select formControlName="categoryId" required>
+      @for (category of categories$ | async; track category.id) {
+      <mat-option [value]="category.id">{{ category.name }}</mat-option>
+      }
+    </mat-select>
+    @if (form.controls['categoryId'].invalid &&
+    form.controls['categoryId'].touched) {
+    <mat-error>Category is required</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Available checkbox (full row) -->
+  <mat-checkbox formControlName="available" class="w-full">
+    Available
+  </mat-checkbox>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid"
+  >
+    {{ data ? "Update" : "Create" }}
+  </button>
+</div>

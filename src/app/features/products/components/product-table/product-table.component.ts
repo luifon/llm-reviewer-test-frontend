@@ -10,12 +10,16 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormGroup } from '@angular/forms';
 import { Product } from '../../../../core/models/product.model';
 import { ProductService } from '../../../../core/services/product.service';
 import { catchError, finalize, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
+import { ProductFormModalComponent } from '../product-modal/product-form-modal.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-product-table',
@@ -26,6 +30,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatPaginatorModule,
     MatSortModule,
     MatProgressSpinnerModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   templateUrl: './product-table.component.html',
   styleUrls: ['./product-table.component.scss'],
@@ -33,9 +39,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class ProductTableComponent implements OnChanges {
   @Input({ required: true }) filters!: FormGroup;
 
-  private productService = inject(ProductService);
-
-  displayedColumns = ['name', 'price', 'available', 'category'];
+  displayedColumns = ['name', 'price', 'available', 'category', 'actions'];
   data = signal<Product[]>([]);
   loading = signal(false);
   totalItems = signal(0);
@@ -44,6 +48,11 @@ export class ProductTableComponent implements OnChanges {
   pageSize = 10;
   sortField = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
+
+  constructor(
+    private dialog: MatDialog,
+    private productService: ProductService
+  ) {}
 
   ngOnChanges(): void {
     this.pageIndex = 0;
@@ -104,5 +113,21 @@ export class ProductTableComponent implements OnChanges {
     this.sortField = event.active;
     this.sortDirection = event.direction || 'asc';
     this.loadData();
+  }
+
+  editProduct(productId: string) {
+    this.productService.findById(productId).subscribe((product) => {
+      this.dialog
+        .open(ProductFormModalComponent, {
+          data: product,
+          height: '70%',
+        })
+        .afterClosed()
+        .subscribe((res) => {
+          if (res) {
+            this.filters.setValue({ ...this.filters.value });
+          }
+        });
+    });
   }
 }
