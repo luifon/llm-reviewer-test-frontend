@@ -9,7 +9,7 @@ To run the project, you'll need to use a node version compatible with Angular 19
 Afterwards, you'll need to run the below command to install the libraries used in the project:
 
 ```bash
-ng serve
+npm install
 ```
 
 ## Development server
