@@ -139,4 +139,10 @@ export class ProductTableComponent implements OnChanges, AfterViewInit {
         });
     });
   }
+
+  delete(productId: string) {
+    this.productService.delete(productId).subscribe(() => {
+      this.filters.setValue({ ...this.filters.value });
+    });
+  }
 }
