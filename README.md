@@ -2,6 +2,16 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
 
+## Pre Steps to Run the project
+
+To run the project, you'll need to use a node version compatible with Angular 19, such as node v22.
+
+Afterwards, you'll need to run the below command to install the libraries used in the project:
+
+```bash
+ng serve
+```
+
 ## Development server
 
 To start a local development server, run:
