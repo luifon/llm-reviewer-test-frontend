@@ -23,7 +23,6 @@ export class ProductService {
 
   findByFilters(params: ProductFilterParams): Observable<Page<Product>> {
     let httpParams = new HttpParams();
-    console.log(params.available);
 
     if (params.name) httpParams = httpParams.set('name', params.name);
     if (params.available !== null && params.available !== undefined)

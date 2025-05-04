@@ -53,7 +53,6 @@ export class ProductFormModalComponent implements OnInit {
   ) {
     this.isEdit = !!data;
 
-    console.log(data);
     this.form = this.fb.group({
       name: [data?.name || '', [Validators.required]],
       description: [data?.description || ''],
