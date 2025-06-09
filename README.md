@@ -67,3 +67,38 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Task Management Feature
+
+This project now includes a comprehensive Task Management system for demonstration and code review purposes.
+
+### Features
+
+- Task CRUD operations (Create, Read, Update, Delete)
+- Task filtering by status, priority, category, assignee, due date, tags, and search term
+- Task status management and inline updates
+- Responsive, modern UI using Angular Material
+- TypeScript models and interfaces
+- Error handling and loading states
+- Unit tests for the main task list component
+
+### Accessing the Task Management
+
+- Start the Angular app as usual (`npm start` or `ng serve`).
+- Navigate to `/tasks` in your browser (this is now the default route).
+
+### Code Structure
+
+- `src/app/components/task-list/` — Task list component (UI, logic, tests, styles)
+- `src/app/services/task.service.ts` — Task API service
+- `src/app/models/task.model.ts` — Task, enums, and filter interfaces
+- `src/environments/environment.ts` — API URL configuration
+
+### Note
+
+- The TaskService expects a backend at `http://localhost:3000/api/tasks`. You can mock this endpoint or implement a simple backend for full CRUD functionality.
+- The UI is built with Angular Material and is fully responsive.
+
+---
+
+For more details, see the code in the respective files.

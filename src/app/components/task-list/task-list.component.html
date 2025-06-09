@@ -1,0 +1,175 @@
+<div class="task-list-container">
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <input
+            matInput
+            formControlName="searchTerm"
+            placeholder="Search tasks..."
+          />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status" multiple>
+            <mat-option
+              *ngFor="let status of TaskStatus | keyvalue"
+              [value]="status.value"
+            >
+              {{ status.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Priority</mat-label>
+          <mat-select formControlName="priority" multiple>
+            <mat-option
+              *ngFor="let priority of TaskPriority | keyvalue"
+              [value]="priority.value"
+            >
+              {{ priority.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category" multiple>
+            <mat-option
+              *ngFor="let category of TaskCategory | keyvalue"
+              [value]="category.value"
+            >
+              {{ category.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Assigned To</mat-label>
+          <input
+            matInput
+            formControlName="assignedTo"
+            placeholder="Filter by assignee"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Due Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input
+              matStartDate
+              formControlName="dueDateStart"
+              placeholder="Start date"
+            />
+            <input
+              matEndDate
+              formControlName="dueDateEnd"
+              placeholder="End date"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <button mat-button color="warn" (click)="clearFilters()">
+          <mat-icon>clear_all</mat-icon>
+          Clear Filters
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error_outline</mat-icon>
+    {{ error }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Tasks List -->
+  <div class="tasks-grid" *ngIf="!loading && !error">
+    <mat-card *ngFor="let task of tasks" class="task-card">
+      <mat-card-header>
+        <mat-card-title>{{ task.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <span class="task-category">{{ task.category }}</span>
+          <span
+            class="task-priority"
+            [ngClass]="'priority-' + task.priority.toLowerCase()"
+          >
+            {{ task.priority }}
+          </span>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="task-description">{{ task.description }}</p>
+
+        <div class="task-meta">
+          <div class="meta-item">
+            <mat-icon>person</mat-icon>
+            <span>{{ task.assignedTo }}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>event</mat-icon>
+            <span>{{ task.dueDate | date }}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ task.estimatedHours }}h / {{ task.actualHours }}h</span>
+          </div>
+        </div>
+
+        <div class="task-tags" *ngIf="task.tags.length > 0">
+          <mat-chip *ngFor="let tag of task.tags" class="tag-chip">
+            {{ tag }}
+          </mat-chip>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <mat-button-toggle-group
+          [value]="task.status"
+          (change)="updateTaskStatus(task.id, $event.value)"
+        >
+          <mat-button-toggle
+            *ngFor="let status of TaskStatus | keyvalue"
+            [value]="status.value"
+          >
+            {{ status.value }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="deleteTask(task.id)"
+          matTooltip="Delete Task"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && tasks.length === 0" class="empty-state">
+    <mat-icon>assignment</mat-icon>
+    <h3>No tasks found</h3>
+    <p>Try adjusting your filters or create a new task</p>
+  </div>
+</div>
