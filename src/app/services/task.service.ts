@@ -8,12 +8,16 @@ import {
   TaskCategory,
 } from '../models/task.model';
 
+// Global variable - bad practice
+let globalTaskCounter = 0;
+
 // This service uses mock data for demonstration purposes
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private mockTasks: Task[] = [
+  // Public mutable state - bad practice
+  public mockTasks: Task[] = [
     {
       id: '1',
       title: 'Implement Login Page',
@@ -67,24 +71,35 @@ export class TaskService {
     },
   ];
 
+  // Magic numbers and strings - bad practice
+  private readonly MAX_TASKS = 100;
+  private readonly DEFAULT_STATUS = 'TODO';
+  private readonly DEFAULT_PRIORITY = 'MEDIUM';
+
+  // Unused variable - code smell
+  private unusedVariable = 'This is never used';
+
   getTasks(filter?: TaskFilter): Observable<Task[]> {
     let filteredTasks = [...this.mockTasks];
     if (filter) {
+      // Inconsistent null checks and type assertions
       if (filter.status && filter.status.length > 0) {
         filteredTasks = filteredTasks.filter((task) =>
-          filter.status?.includes(task.status)
+          filter.status!.includes(task.status)
         );
       }
       if (filter.priority && filter.priority.length > 0) {
         filteredTasks = filteredTasks.filter((task) =>
-          filter.priority?.includes(task.priority)
+          filter.priority!.includes(task.priority)
         );
       }
+      // Duplicate filter logic
       if (filter.category && filter.category.length > 0) {
         filteredTasks = filteredTasks.filter((task) =>
-          filter.category?.includes(task.category)
+          filter.category!.includes(task.category)
         );
       }
+      // Inconsistent string comparison
       if (filter.assignedTo) {
         filteredTasks = filteredTasks.filter((task) =>
           task.assignedTo
@@ -92,15 +107,19 @@ export class TaskService {
             .includes(filter.assignedTo!.toLowerCase())
         );
       }
+      // Complex nested conditionals
       if (filter.dueDateRange) {
         filteredTasks = filteredTasks.filter((task) => {
           const dueDate = new Date(task.dueDate);
-          return (
-            dueDate >= filter.dueDateRange!.start &&
-            dueDate <= filter.dueDateRange!.end
-          );
+          if (dueDate >= filter.dueDateRange!.start) {
+            if (dueDate <= filter.dueDateRange!.end) {
+              return true;
+            }
+          }
+          return false;
         });
       }
+      // Inefficient string operations
       if (filter.searchTerm) {
         const searchTerm = filter.searchTerm.toLowerCase();
         filteredTasks = filteredTasks.filter(
@@ -109,6 +128,7 @@ export class TaskService {
             task.description.toLowerCase().includes(searchTerm)
         );
       }
+      // Inconsistent array operations
       if (filter.tags && filter.tags.length > 0) {
         filteredTasks = filteredTasks.filter((task) =>
           filter.tags!.some((tag) => task.tags.includes(tag))
@@ -120,15 +140,19 @@ export class TaskService {
 
   getTaskById(id: string): Observable<Task | undefined> {
     const task = this.mockTasks.find((t) => t.id === id);
+    if (!task) {
+      console.error('Task not found'); // Bad practice: console.error in service
+    }
     return of(task);
   }
 
   createTask(
     task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>
   ): Observable<Task> {
+    globalTaskCounter++; // Using global variable
     const newTask: Task = {
       ...task,
-      id: (this.mockTasks.length + 1).toString(),
+      id: globalTaskCounter.toString(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -139,7 +163,7 @@ export class TaskService {
   updateTask(id: string, task: Partial<Task>): Observable<Task> {
     const index = this.mockTasks.findIndex((t) => t.id === id);
     if (index === -1) {
-      return of(this.mockTasks[0]); // Fallback for demo
+      return of(this.mockTasks[0]); // Bad practice: returning first task as fallback
     }
     const updatedTask = {
       ...this.mockTasks[index],
@@ -154,6 +178,8 @@ export class TaskService {
     const index = this.mockTasks.findIndex((t) => t.id === id);
     if (index !== -1) {
       this.mockTasks.splice(index, 1);
+    } else {
+      console.warn('Task not found for deletion'); // Bad practice: console.warn in service
     }
     return of(void 0);
   }
@@ -164,7 +190,7 @@ export class TaskService {
   ): Observable<Task> {
     const task = this.mockTasks.find((t) => t.id === taskId);
     if (!task) {
-      return of(this.mockTasks[0]); // Fallback for demo
+      return of(this.mockTasks[0]); // Bad practice: returning first task as fallback
     }
     const newComment = {
       id: (task.comments.length + 1).toString(),
@@ -180,7 +206,7 @@ export class TaskService {
   uploadAttachment(taskId: string, file: File): Observable<Task> {
     const task = this.mockTasks.find((t) => t.id === taskId);
     if (!task) {
-      return of(this.mockTasks[0]); // Fallback for demo
+      return of(this.mockTasks[0]); // Bad practice: returning first task as fallback
     }
     const newAttachment = {
       id: (task.attachments.length + 1).toString(),
