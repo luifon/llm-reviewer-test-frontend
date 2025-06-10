@@ -1,0 +1,11 @@
+rules:
+  - Prefer using standalone components and directives unless there's a strong reason to use NgModules
+  - Use Angular signals (`signal`, `computed`, `effect`) instead of RxJS for local component state
+  - Avoid using `NgModule`; use functional providers like `provideHttpClient()` and `provideRouter()` instead
+  - Always use `inject()` over `constructor` injection in standalone components and services when possible
+  - Prefer `ChangeDetectionStrategy.OnPush` or zone-less setups where performance is a concern
+  - Avoid using `ngOnInit` unless necessary — prefer inline initialization or constructor logic
+  - Structure component state around `signals` and `computed` instead of `BehaviorSubject`
+  - Avoid default exports; use named exports for all components, services, and utility functions
+  - Avoid direct DOM manipulation with `ElementRef` unless absolutely necessary
+  - Do not use `any` type — prefer `unknown`, generics, or strict typing
